@@ -8,18 +8,19 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
-}
-
-func hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+func question(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	queryValues := r.URL.Query()
+	fmt.Fprintf(w, "question: %s, TTL: %s\n", queryValues.Get("q"), queryValues.Get("ttl"))
 }
 
 func main() {
 	router := httprouter.New()
-	router.GET("/", index)
-	router.GET("/hello/:name", hello)
+	router.GET("/question", question)
+
+	// if not found look for a static file
+	static := httprouter.New()
+	static.ServeFiles("/*filepath", http.Dir("public"))
+	router.NotFound = static
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
