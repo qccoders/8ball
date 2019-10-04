@@ -2,5 +2,10 @@
   "name": "nodejs",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "aws-serverless-express": "^3.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
 }
