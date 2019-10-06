@@ -74,6 +74,7 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		Responses: &[]model.Response{},
 	}
 
+	// todo: iterate over registered agents
 	for i := 0; i < 3; i++ {
 		wg.Add(1)
 		go getAgentAnswer("https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/answer?q=does%20this%20work", request)
@@ -89,25 +90,25 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func getAgentAnswer(agentURL string, request model.Request) {
 	defer request.WaitGroup.Done()
 
-	client := http.Client{Timeout: time.Duration(request.TTL) * time.Millisecond}
+	httpClient := http.Client{Timeout: time.Duration(request.TTL) * time.Millisecond}
 
-	req, err := http.NewRequest("GET", agentURL, nil)
+	httpRequest, err := http.NewRequest("GET", agentURL, nil)
 	if err != nil {
 		return
 	}
 
-	req.Header.Add("User-Agent", "Distributed Magic 8-Ball (https://github.com/qccoders/8ball)")
+	httpRequest.Header.Add("User-Agent", "Distributed Magic 8-Ball (https://github.com/qccoders/8ball)")
 
-	resp, err := client.Do(req)
+	httpResponse, err := httpClient.Do(httpRequest)
 	if err != nil {
 		log.Printf("Error: %s", err)
 		return
 	}
 
-	defer resp.Body.Close()
+	defer httpResponse.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if httpResponse.StatusCode == http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(httpResponse.Body)
 		if err != nil {
 			return
 		}
