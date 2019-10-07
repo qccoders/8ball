@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -14,21 +14,22 @@ import (
 
 	model "./model"
 	"github.com/julienschmidt/httprouter"
+	"gopkg.in/yaml.v2"
 )
 
-const errorsBeforeDeregistration = 3
 const defaultAgentResponseTTL = 1000
-const sharedKey = "Bearer b0486c92-f2ef-487b-9cdf-8550f2177fb5"
+const configFile = "config/agents.yml"
 
-var agents map[string]int8
+var agents []model.Agent
 
 func main() {
-	agents = map[string]int8{}
+	log.Println("Distributed Magic-8 Ball starting...")
+
+	agents = loadAgentsFromYaml(configFile)
+	logRegisteredAgents()
 
 	router := httprouter.New()
 	router.GET("/answer", answer)
-	router.PUT("/webhooks/:url", register)
-	router.DELETE("/webhooks/:url", deregister)
 
 	static := httprouter.New()
 	static.ServeFiles("/*filepath", http.Dir("public"))
@@ -36,18 +37,6 @@ func main() {
 
 	log.Println("Listening on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
-}
-
-func authorize(r *http.Request, w http.ResponseWriter) error {
-	key := r.Header.Get("Authorization")
-
-	if key != sharedKey {
-		http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
-		log.Printf("Unauthorized de/registration from %s with key '%s'", r.Host, key)
-		return errors.New("Invalid auth token")
-	}
-
-	return nil
 }
 
 func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -61,10 +50,6 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ttl = defaultAgentResponseTTL
 	}
 
-	log.Printf("TTL: %d", ttl)
-
-	agents, _ := json.Marshal(agents)
-
 	var wg sync.WaitGroup
 
 	request := model.Request{
@@ -76,24 +61,25 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 
 	// todo: iterate over registered agents
-	for i := 0; i < 3; i++ {
+	for _, agent := range agents {
 		wg.Add(1)
-		go getAgentAnswer("https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/answer?q=does%20this%20work", request)
+		go getAgentAnswer(agent, request)
 	}
 
 	wg.Wait()
 
 	res, _ := json.Marshal(request.Responses)
-	fmt.Fprintf(w, "question: %s, TTL: %d\nAgents: %s\nResponse: %s\n", question, ttl, agents, res)
+	fmt.Fprintf(w, "{ \"question\": %s, \"ttl\": %d, \"responses\": %s }", question, ttl, res)
 	log.Printf("Answered question '%s' for client %s", question, r.Host)
 }
 
-func getAgentAnswer(agentURL string, request model.Request) {
+func getAgentAnswer(agent model.Agent, request model.Request) {
 	defer request.WaitGroup.Done()
 
 	httpClient := http.Client{Timeout: time.Duration(request.TTL) * time.Millisecond}
 
-	httpRequest, err := http.NewRequest("GET", agentURL, nil)
+	url := fmt.Sprintf("%s/answer?q=%s&ttl=%d", agent.Webhook, request.Question, request.TTL)
+	httpRequest, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return
 	}
@@ -109,6 +95,9 @@ func getAgentAnswer(agentURL string, request model.Request) {
 			response.Error = err
 		}
 
+		// the response contains a name, but it may differ from what's in our local config.
+		// swap it out, so we can keep track.
+		response.Name = agent.Name
 		*request.Responses = append(*request.Responses, response)
 	}
 
@@ -169,30 +158,34 @@ func getResponseBody(r *http.Response) (body []byte, err error) {
 	return empty, nil
 }
 
-func register(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if err := authorize(r, w); err == nil {
-		url := ps.ByName("url")
+func logRegisteredAgents() {
+	log.Println()
+	log.Printf("%-15s\t%-15s\t%s", "Agent", "Language", "Webhook")
+	log.Printf("%-15s\t%-15s\t%s", "-----", "--------", "-------")
 
-		if url == "" {
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		}
-
-		agents[url] = errorsBeforeDeregistration
-		log.Printf("Registered agent at %s\n", url)
-		w.WriteHeader(http.StatusNoContent)
+	for _, agent := range agents {
+		log.Printf("%-15s\t%-15s\t%s", agent.Name, agent.Language, agent.Webhook)
 	}
+
+	log.Println()
 }
 
-func deregister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if err := authorize(r, w); err == nil {
-		url := ps.ByName("url")
+func loadAgentsFromYaml(file string) (agents []model.Agent) {
+	file = filepath.FromSlash(file) // force cross-platform separator char conversion
 
-		if url == "" {
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		}
+	log.Printf("Loading agents from %s...", file)
 
-		delete(agents, url)
-		log.Printf("Deregistered agent at %s\n", url)
-		w.WriteHeader(http.StatusNoContent)
+	yamlFile, err := ioutil.ReadFile(file)
+	if err != nil {
+		log.Fatalf("Failed to read file %s: %s", file, err)
 	}
+
+	agents = []model.Agent{}
+
+	err = yaml.Unmarshal(yamlFile, &agents)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal yaml contents: %s", err)
+	}
+
+	return agents
 }
