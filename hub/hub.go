@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -98,30 +99,74 @@ func getAgentAnswer(agentURL string, request model.Request) {
 	}
 
 	httpRequest.Header.Add("User-Agent", "Distributed Magic 8-Ball (https://github.com/qccoders/8ball)")
+	httpRequest.Header.Add("X-Forwarded-For", request.Host)
+
+	var response = model.Response{}
+
+	var reportResult = func(res model.Response, err *model.Error) {
+		if err != nil {
+			response.Response = -1
+			response.Error = err
+		}
+
+		*request.Responses = append(*request.Responses, response)
+	}
 
 	httpResponse, err := httpClient.Do(httpRequest)
 	if err != nil {
-		log.Printf("Error: %s", err)
+		reportResult(response, makeError(500, nil, err))
 		return
 	}
 
-	defer httpResponse.Body.Close()
+	body, err := getResponseBody(httpResponse)
 
-	if httpResponse.StatusCode == http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(httpResponse.Body)
-		if err != nil {
-			return
-		}
-
-		var res = model.Response{}
-		err = json.Unmarshal(bodyBytes, &res)
-
-		if err == nil {
-			*request.Responses = append(*request.Responses, res)
-		} else {
-			// todo: report the error
-		}
+	if httpResponse.StatusCode != http.StatusOK {
+		reportResult(response, makeError(httpResponse.StatusCode, body, err))
+		return
 	}
+
+	err = json.Unmarshal(body, &response)
+
+	if err == nil {
+		reportResult(response, nil)
+	} else {
+		reportResult(response, makeError(500, body, err))
+	}
+}
+
+func makeError(code int, body []byte, err error) *model.Error {
+	var message string
+
+	if err != nil {
+		if strings.Contains(err.Error(), "Client.Timeout exceeded") {
+			code = 408
+			message = "Timed out"
+		} else {
+			message = err.Error()
+		}
+	} else {
+		message = string(body)
+	}
+
+	return &model.Error{
+		StatusCode: code,
+		Message:    message,
+	}
+}
+
+func getResponseBody(r *http.Response) (body []byte, err error) {
+	if r.Body != nil {
+		defer r.Body.Close()
+		bodyBytes, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		return bodyBytes, nil
+	}
+
+	empty := []byte("N/A")
+	return empty, nil
 }
 
 func register(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
