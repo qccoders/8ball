@@ -1,0 +1,6 @@
+- name: Stooges
+  webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
+  language: nodejs
+- name: Stooges2
+  webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
+  language: nodejs
