@@ -117,58 +117,9 @@ The "GoldenEye" agent is responsible for populating the `delay` property of its 
 
 Agents which have child agents are responsible for determining the agent's overall `response`, which might be a weighted average of child responses, or something completely random; this is up to the agent.
 
-## Agent Registration
-
-Your agent must register its callback URL with the hub to begin receiving questions.
-
-It might be a good idea to re-register if you haven't recieved a question from the hub in a while, as your registration may have been removed or lost.
-
-Use this endpoint to check to see if the hub is operational.  If it returns a 200/OK response, it's up.  Otherwise, it's down.
-
-### Request 
-
-```
-PUT /webhooks/<url to agent>
-Authorization: Bearer <static API token>
-```
-### Response
-
-* Authorization Failure: HTTP 403/Forbidden
-* Success: HTTP 200/OK
-
-### Example
-
-```
-curl -XPUT -H 'Authorization: Bearer 700373e4-1214-4b12-8190-53e8fc54426b' 'http://8ball.qccoders.org/webhooks/http%3A%2F%2Fmy-agent%3A80%2Fapi'
-```
-
-## Agent Deregistration
-
-As your agent is going offline, it would be nice if you would remove the registration so the hub doesn't continue to try to send questions to it.
-
-If your agent fails to respond to 3 requests in a row, it is automatically unregistered.  This doesn't include timeouts.
-
-### Request
-
-```
-DELETE /webhooks/<url to agent>
-Authorization: Bearer <static API token>
-```
-
-### Response
-
-* Authorization Failure: HTTP 403/Forbidden
-* Success: HTTP 204/No Content
-
-### Example
-
-```
-curl -XDELETE -H 'Authorization: Bearer 700373e4-1214-4b12-8190-53e8fc54426b' 'http://8ball.qccoders.org/webhooks/http%3A%2F%2Fmy-agent%3A80%2Fapi'
-```
-
 # Agent API
 
-## Forwarding a Question
+## Handling a Question
 
 The agent API for handling questions is identical to the hub, except for the addition of the `X-Forwarded-For` header used to identify the client that originated the request at the hub.
 
@@ -181,8 +132,8 @@ X-Forwarded-For: <originating IP address>
 
 ### Response
 
-* Rate Limited: HTTP 429/Too Many Requests
-* IP Ban: HTTP 403/Forbidden
+* (Optional) Rate Limited: HTTP 429/Too Many Requests
+* (Optional) IP Ban: HTTP 403/Forbidden
 * Success: HTTP 200/OK
 
 ```
@@ -198,3 +149,15 @@ X-Forwarded-For: <originating IP address>
     }]
 }
 ```
+
+## Agent Registration
+
+In order to register your agent with the hub, you must add an entry to `config/agents.yml`, like so:
+
+```yaml
+- name: Stooges
+  webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
+  language: nodejs
+```
+
+Where `name` is the name for your agent (that's up to you), `webhook` is the fully qualified URL where your agent will receive question requests, and `language` is the language in which your agent is written (nodejs, c#, go, python, etc.. this is so we can add an icon to the UI).
