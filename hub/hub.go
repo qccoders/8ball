@@ -50,6 +50,11 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ttl = defaultAgentResponseTTL
 	}
 
+	hubResponse := model.HubResponse{
+		Question: question,
+		TTL:      ttl,
+	}
+
 	var wg sync.WaitGroup
 
 	request := model.Request{
@@ -60,6 +65,8 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		Responses: &[]model.Response{},
 	}
 
+	start := time.Now()
+
 	// todo: iterate over registered agents
 	for _, agent := range agents {
 		wg.Add(1)
@@ -68,8 +75,12 @@ func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	wg.Wait()
 
-	res, _ := json.Marshal(request.Responses)
-	fmt.Fprintf(w, "{ \"question\": %s, \"ttl\": %d, \"responses\": %s }", question, ttl, res)
+	hubResponse.Delay = int(time.Since(start) / time.Millisecond)
+	hubResponse.Responses = *request.Responses
+
+	res, _ := json.Marshal(hubResponse)
+
+	fmt.Fprintf(w, "%s", res)
 	log.Printf("Answered question '%s' for client %s", question, r.Host)
 }
 
@@ -88,6 +99,7 @@ func getAgentAnswer(agent model.Agent, request model.Request) {
 	httpRequest.Header.Add("X-Forwarded-For", request.Host)
 
 	var response = model.Response{}
+	start := time.Now()
 
 	var reportResult = func(res model.Response, err *model.Error) {
 		if err != nil {
@@ -98,6 +110,7 @@ func getAgentAnswer(agent model.Agent, request model.Request) {
 		// the response contains a name, but it may differ from what's in our local config.
 		// swap it out, so we can keep track.
 		response.Name = agent.Name
+		response.Delay = int(time.Since(start) / time.Millisecond)
 		*request.Responses = append(*request.Responses, response)
 	}
 

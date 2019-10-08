@@ -20,6 +20,10 @@ The optional `ttl` query parameter specifies the maximum time, in milliseconds, 
 
 ```
 {
+  question: <string>
+  ttl: <integer>
+  delay: <integer>
+  responses: [{
     name: <string>,
     response: <integer, 0-19>,
     delay: <integer, optional>
@@ -29,6 +33,7 @@ The optional `ttl` query parameter specifies the maximum time, in milliseconds, 
         delay: <integer, optional>
         children: [..]
     }]
+  }]
 }
 ```
 
@@ -68,47 +73,52 @@ curl -XGET 'http://8ball.qccoders.org/answer?q=yes or no question&ttl=5000'
 
 ---------------------------------------------------------------------------
 
-[
-  {
-    "name": "Agent 007",
-    "response": 5,
-    "delay": 187,
-    "children": [
-      {
-        "name": "Moonraker",
-        "response": 13,
-        "delay": 123
-      },
-      {
-        "name": "GoldenEye",
-        "response": 4,
-        "delay": 123,
-        "children": [
-          {
-            "name": "The Movie",
-            "response": 13,
-            "delay": 78
-          },
-          {
-            "name": "The N64 Game",
-            "response": 3,
-            "delay": 52
-          }
-        ]
-      },
-      {
-        "name": "Skyfall",
-        "response": 8,
-        "delay": 157
-      }
-    ]
-  },
-  {
-    "name": "Simple Agent",
-    "response": 10,
-    "delay": 30
-  }
-]
+{
+  "question": "yes or no question",
+  "ttl": 5000,
+  "delay": 187,
+  "responses": [
+    {
+      "name": "Agent 007",
+      "response": 5,
+      "delay": 187,
+      "children": [
+        {
+          "name": "Moonraker",
+          "response": 13,
+          "delay": 123
+        },
+        {
+          "name": "GoldenEye",
+          "response": 4,
+          "delay": 123,
+          "children": [
+            {
+              "name": "The Movie",
+              "response": 13,
+              "delay": 78
+            },
+            {
+              "name": "The N64 Game",
+              "response": 3,
+              "delay": 52
+            }
+          ]
+        },
+        {
+          "name": "Skyfall",
+          "response": 8,
+          "delay": 157
+        }
+      ]
+    },
+    {
+      "name": "Simple Agent",
+      "response": 10,
+      "delay": 30
+    }
+  ]
+}
 ```
 
 The example response payload above contains responses from two first-order agents, "Agent 007", and "Simple Agent".  The agent "Agent 007" has three child agents, "Moonraker", "GoldenEye", and "Skyfall", and the "GoldenEye" agent has two additional children, "The Movie" and "The N64 Game".
