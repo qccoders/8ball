@@ -1,0 +1,1 @@
+mkdir -p dist && sbcl --load src/build.lisp
