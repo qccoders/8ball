@@ -8,5 +8,5 @@
   webhook: https://8ballagent.glitch.me
   language: nodejs
 - name: PHPBall
-  webhook: http://localhost:8000
+  webhook: https://billw.dev
   language: php
