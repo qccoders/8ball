@@ -4,3 +4,6 @@
 - name: Stooges2
   webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
   language: nodejs
+- name: HeyJP
+  webhook: https://8ballagent.glitch.me
+  language: nodejs
