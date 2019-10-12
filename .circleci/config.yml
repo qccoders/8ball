@@ -13,6 +13,9 @@ jobs:
       - image: circleci/golang:latest
     steps:
       - checkout
+      - run: apt-get install nodejs
+      - run: apt-get install npm
+      - run: npm install -g yarn
       - setup_remote_docker:
           docker_layer_caching: true
       - run: bash ./build/build.sh
