@@ -11,10 +11,18 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker
+      - image: ubuntu
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+        name: Install Docker client
+        command: |
+          set -x
+          VER="17.03.0-ce"
+          curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+          tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+          mv /tmp/docker/* /usr/bin
       - run: bash ./build/build.sh
       - run: bash ./build/deploy.sh
