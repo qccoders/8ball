@@ -1,28 +1,31 @@
 workflows:
   version: 2
-  main:
+  build-and-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
-
+      - build
+      - deploy:
+          requires:
+            - build
 version: 2
 jobs:
   build:
     docker:
-      - image: ubuntu
+      - image: circleci/golang:latest
     steps:
       - checkout
+      - run: sudo apt-get install nodejs
+      - run: sudo apt-get install npm
+      - run: sudo npm install -g yarn
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:
-        name: Install Docker client
-        command: |
-          set -x
-          VER="17.03.0-ce"
-          curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-          tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-          mv /tmp/docker/* /usr/bin
       - run: bash ./build/build.sh
-      - run: bash ./build/deploy.sh
+  deploy:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - run:
+          name: Deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              bash ./build/deploy.sh
+            fi
