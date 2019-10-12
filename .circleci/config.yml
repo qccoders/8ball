@@ -16,5 +16,5 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ./build/build.sh
-      - run: ./build/deploy.sh
+      - run: bash ./build/build.sh
+      - run: bash ./build/deploy.sh
