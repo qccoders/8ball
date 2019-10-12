@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -89,8 +90,8 @@ func getAgentAnswer(agent model.Agent, request model.Request) {
 
 	httpClient := http.Client{Timeout: time.Duration(request.TTL) * time.Millisecond}
 
-	url := fmt.Sprintf("%s/answer?q=%s&ttl=%d", agent.Webhook, request.Question, request.TTL)
-	httpRequest, err := http.NewRequest("GET", url, nil)
+	requestURL := fmt.Sprintf("%s/answer?q=%s&ttl=%d", agent.Webhook, url.QueryEscape(request.Question), request.TTL)
+	httpRequest, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		return
 	}
