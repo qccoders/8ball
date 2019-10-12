@@ -24,7 +24,7 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - run: bash ./build/build.sh
-- deploy:
+  deploy:
     command: |
       if [ "${CIRCLE_BRANCH}" == "master" ]; then
         bash ./build/deploy.sh
