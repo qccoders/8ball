@@ -1,11 +1,3 @@
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
 version: 2
 jobs:
   build:
@@ -13,18 +5,22 @@ jobs:
       - image: circleci/golang:latest
     steps:
       - checkout
-      - run: sudo apt-get install nodejs
-      - run: sudo apt-get install npm
-      - run: sudo npm install -g yarn
+      - run: 
+          name: Instal Node
+          command: sudo apt-get install nodejs
+      - run: 
+          name: Install NPM
+          command: sudo apt-get install npm
+      - run: 
+          name: Install Yarn
+          command: sudo npm install -g yarn
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: bash ./build/build.sh
-  deploy:
-    docker:
-      - image: circleci/golang:latest
-    steps:
+      - run: 
+          name: Build
+          command: bash ./build/build.sh
       - run:
-          name: Deploy
+          name: Deploy (master only)
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               bash ./build/deploy.sh
