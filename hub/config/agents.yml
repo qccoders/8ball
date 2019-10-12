@@ -1,12 +1,12 @@
 - name: Stooges
   webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
   language: nodejs
-- name: Stooges2
-  webhook: https://4f9gs2dqw3.execute-api.us-east-1.amazonaws.com/prod/
-  language: nodejs
-- name: HeyJP
+- name: Glitch
   webhook: https://8ballagent.glitch.me
   language: nodejs
 - name: PHPBall
   webhook: https://billw.dev
   language: php
+- name: AlwaysYes
+  webhook: https://raw.githubusercontent.com/qccoders/8ball/jp/static-agent/agents/static/jp/
+  language: json
