@@ -6,14 +6,10 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: Instal Node
-          command: sudo apt-get install nodejs
-      - run: 
-          name: Install NPM
-          command: sudo apt-get install npm
-      - run: 
-          name: Install Yarn
-          command: sudo npm install -g yarn
+          name: Install Dependencies
+          command: |
+            sudo apt-get install nodejs npm sshpass -y
+            sudo npm install -g yarn
       - setup_remote_docker:
           docker_layer_caching: true
       - run: 
