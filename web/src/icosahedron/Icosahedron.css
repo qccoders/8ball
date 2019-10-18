@@ -1,20 +1,21 @@
 .icosahedron-container {
+   background-color: red;
     min-height: 315px;
 }
 
 .icosahedron {
-    border-top: 185px solid rgb(37, 95, 255);
-    border-bottom: 130px solid transparent;
-    border-left: 130px solid transparent;
-    border-right: 130px solid transparent;
-    width: 0px;
-    height: 0px;
+   background-color: #255fff;
+   width: 260px;
+   height: 260px;
+   position: relative;
+   /* Make this an equilateral triangle */
+   clip-path: polygon(0 0, 100% 0, 50% 85%);
     -webkit-animation-duration: 3s;
     animation-duration: 3s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
  }
- 
+
  @-webkit-keyframes fadeIn {
     0% {opacity: 0;}
     100% {opacity: 1;}
@@ -33,13 +34,15 @@
 @keyframes fadeIn {
     0% {opacity: 0;}
     100% {opacity: 1;}
- } 
+ }
 
 .text {
     color: rgb(174, 196, 255);
-    margin-left: -75px;
-    margin-top: -140px;
-    width: 150px;
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    /* Center the element around its origin */
+    transform: translate(-50%, -50%);
     font-size: larger;
     font-weight: bold;
     text-shadow: 0px 0px 10px rgb(0, 0, 0);
