@@ -1,12 +1,11 @@
 .icosahedron-container {
-   background-color: red;
-    min-height: 315px;
+   min-height: 315px;
 }
 
 .icosahedron {
    background-color: #255fff;
-   width: 260px;
-   height: 260px;
+   width: 160px;
+   height: 160px;
    position: relative;
    /* Make this an equilateral triangle */
    clip-path: polygon(0 0, 100% 0, 50% 85%);
