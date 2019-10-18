@@ -11,7 +11,7 @@ jobs:
             sudo apt-get install nodejs npm sshpass -y
             sudo npm install -g yarn
       - setup_remote_docker:
-          docker_layer_caching: true
+          docker_layer_caching: false
       - run: 
           name: Build
           command: bash ./build/build.sh
