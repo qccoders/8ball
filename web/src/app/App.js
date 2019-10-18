@@ -35,7 +35,7 @@ class App extends Component {
         return (
             <div className="app">
                 <div className="window">
-                    <div id='question-input-container' className="input-container shake">
+                    <div id='question-input-container' className="input-container">
                         <Segment inverted>
                             <Input 
                                 id='question-input'
