@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Segment, Input, Button, Label, Icon } from 'semantic-ui-react';
 
 import { hubURL } from '../constants';
+import strategies from '../strategies';
 import "./App.css";
 import Icosahedron from "../icosahedron/Icosahedron";
 
@@ -24,16 +25,12 @@ class App extends Component {
                 .then(response => {
                     let responses = response.data.responses;
 
-                    this.setState({ responses: responses }, () => {
-                        let sum = responses.reduce((acc, r) => acc + r.response, 0)
-                        return Math.ceil(sum / responses.length);
+                    this.setState({ 
+                        responses: responses,
+                        response: this.calculateResponse(responses),
+                        refreshing: false
                     });
-                })
-                .then(response => {
-                    this.setState({ response: response }, () => {
-                        this.setState({ refreshing: false })
-                    })
-                })
+                });
             })
         }
     }
@@ -48,8 +45,17 @@ class App extends Component {
         this.setState({ question: e.target.value })
     }
 
+    calculateResponse = (responses) => {
+        let strategy = strategies[Math.floor(Math.random() * strategies.length)];
+        
+        var result = strategy.compute([...responses]);
+        
+        console.log(strategy.name, result, responses);
+        return result;
+    }
+
     render() {
-        var { refreshing, response, question, askedQuestion, responses } = this.state;
+        var { refreshing, response, question, askedQuestion } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -82,9 +88,6 @@ class App extends Component {
                     </div>
                     <Icosahedron refreshing={refreshing} response={response}/>
                     <Icon name='info circle' size='big' className='icon'/>
-                    <pre>
-                        {JSON.stringify(responses, null, 2)}
-                    </pre>
                 </div>
             </div>
         );
