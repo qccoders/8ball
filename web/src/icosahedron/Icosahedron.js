@@ -1,24 +1,19 @@
 import React, { Component } from "react";
 import "./Icosahedron.css";
-import responses from "../responses"
+import responses from "../responses";
+import { Icon } from 'semantic-ui-react';
 
 class Icosahedron extends Component {
-    state = { hidden: true }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.refreshing !== prevProps.refreshing) {
-            this.setState({ hidden: this.props.refreshing })
-        }
-    }
-
     render() {
+        let { initialized, refreshing } = this.props;
+
         return (
             <div className="icosahedron-container">
-                {this.state.hidden || <div className="icosahedron fadeIn" style={{ opacity: this.state.opacity }}>
+                {!initialized || (!refreshing ? <div className="icosahedron fadeIn">
                     <div className="text">
                         {responses[this.props.response]}
                     </div>
-                </div>}
+                </div> : <Icon className='loading-icon' loading name='circle notch' size='big' />)}
             </div>
         );
     }
