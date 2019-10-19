@@ -42,3 +42,7 @@
   90% { transform: translate(1px, 0px) rotate(0deg); }
   100% { transform: translate(0px, 0px) rotate(0deg); }
 }
+
+.icon {
+  color: white;
+}

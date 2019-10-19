@@ -1,26 +1,47 @@
 import React, { Component } from "react";
+import axios from 'axios';
 
-import { Segment, Input, Button, Label } from 'semantic-ui-react';
+import { Segment, Input, Button, Label, Icon } from 'semantic-ui-react';
 
+import { hubURL } from '../constants';
 import "./App.css";
 import Icosahedron from "../icosahedron/Icosahedron";
 
 class App extends Component {
-    state = { refreshing: false, response: 0, question: '', askedQuestion: '' }
+    state = { refreshing: false, response: 0, question: '', askedQuestion: '', responses: [] }
 
-    refresh = (e) => {
+    handleClick = (e) => {
         if (this.state.question === '') {
-            document.getElementById('question-input').focus();
-            document.getElementById('question-input-container').classList.add('shake')
-            setTimeout(() => document.getElementById('question-input-container').classList.remove('shake'), 250)
-            return;
-        }
+            this.rejectClick('question-input', 'question-input-container');
+        } else {
+            this.setState({ 
+                refreshing: true, 
+                question: '', 
+                askedQuestion: this.state.question,
+                responses: []
+            }, () => {
+                axios.get(`${hubURL}?q=${this.state.askedQuestion}`)
+                .then(response => {
+                    let responses = response.data.responses;
 
-        this.setState({ refreshing: true, question: '', askedQuestion: this.state.question }, () => {
-            this.setState({ response: this.state.response + 1 }, () => {
-                this.setState({ refreshing: false })
+                    this.setState({ responses: responses }, () => {
+                        let sum = responses.reduce((acc, r) => acc + r.response, 0)
+                        return Math.ceil(sum / responses.length);
+                    });
+                })
+                .then(response => {
+                    this.setState({ response: response }, () => {
+                        this.setState({ refreshing: false })
+                    })
+                })
             })
-        })
+        }
+    }
+
+    rejectClick = (inputId, containerId) => {
+        document.getElementById(inputId).focus();
+        document.getElementById(containerId).classList.add('shake')
+        setTimeout(() => document.getElementById(containerId).classList.remove('shake'), 250)
     }
 
     handleInput = (e) => {
@@ -28,7 +49,7 @@ class App extends Component {
     }
 
     render() {
-        var { refreshing, response, question, askedQuestion } = this.state;
+        var { refreshing, response, question, askedQuestion, responses } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -46,7 +67,7 @@ class App extends Component {
                                 action={
                                     <Button 
                                         color='green'
-                                        onClick={this.refresh}
+                                        onClick={this.handleClick}
                                     >
                                         Get an Answer!
                                     </Button>
@@ -55,11 +76,15 @@ class App extends Component {
                         </Segment>
                     </div>
                     <div className="question-container">
-                        {askedQuestion !== '' && <Label className="question" inverted size='big'>
+                        {askedQuestion !== '' && <Label className="question" size='big'>
                                 {askedQuestion}
                         </Label>}
                     </div>
                     <Icosahedron refreshing={refreshing} response={response}/>
+                    <Icon name='info circle' size='big' className='icon'/>
+                    <pre>
+                        {JSON.stringify(responses, null, 2)}
+                    </pre>
                 </div>
             </div>
         );
