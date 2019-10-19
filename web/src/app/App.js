@@ -86,7 +86,6 @@ class App extends Component {
                     />
                     <QuestionDisplay question={askedQuestion}/>
                     <Icosahedron initialized={initialized} refreshing={refreshing} response={response}/>
-                    <Icon name='info circle' size='big' className='icon'/>
                 </div>
             </div>
         );
