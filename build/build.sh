@@ -35,6 +35,7 @@ echo ""
 
 go get "github.com/julienschmidt/httprouter"
 go get "gopkg.in/yaml.v2"
+go get "github.com/rs/cors"
 go build .
 echo "seems to have gone well."
 
