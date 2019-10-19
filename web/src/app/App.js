@@ -7,13 +7,22 @@ import { hubURL } from '../constants';
 import strategies from '../strategies';
 import "./App.css";
 import Icosahedron from "../icosahedron/Icosahedron";
+import QuestionInput from "../questionInput/QuestionInput";
+import QuestionDisplay from "../questionDisplay/QuestionDisplay";
 
 class App extends Component {
-    state = { refreshing: false, response: 0, question: '', askedQuestion: '', responses: [] }
+    state = { 
+        refreshing: false, 
+        response: 0, 
+        question: '', 
+        askedQuestion: '', 
+        responses: [],
+        shakeInput: false,
+    };
 
     handleClick = (e) => {
         if (this.state.question === '') {
-            this.rejectClick('question-input', 'question-input-container');
+            this.rejectClick();
         } else {
             this.setState({ 
                 refreshing: true, 
@@ -35,10 +44,12 @@ class App extends Component {
         }
     }
 
-    rejectClick = (inputId, containerId) => {
-        document.getElementById(inputId).focus();
-        document.getElementById(containerId).classList.add('shake')
-        setTimeout(() => document.getElementById(containerId).classList.remove('shake'), 250)
+    rejectClick = () => {
+        document.getElementById('question-input').focus();
+
+        this.setState({ shakeInput: true }, () => {
+            setTimeout(() => this.setState({ shakeInput: false }), 250)
+        })
     }
 
     handleInput = (e) => {
@@ -57,37 +68,21 @@ class App extends Component {
     }
 
     render() {
-        var { refreshing, response, question, askedQuestion } = this.state;
+        var { refreshing, response, question, askedQuestion, shakeInput } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
         return (
             <div className="app">
                 <div className="window">
-                    <div id='question-input-container' className="input-container">
-                        <Segment inverted>
-                            <Input 
-                                id='question-input'
-                                inverted 
-                                value={question}
-                                placeholder='Ask a Question...' 
-                                onChange={this.handleInput}
-                                action={
-                                    <Button 
-                                        color='green'
-                                        onClick={this.handleClick}
-                                    >
-                                        Get an Answer!
-                                    </Button>
-                                }
-                            />
-                        </Segment>
-                    </div>
-                    <div className="question-container">
-                        {askedQuestion !== '' && <Label className="question" size='big'>
-                                {askedQuestion}
-                        </Label>}
-                    </div>
+                    <QuestionInput
+                        id="question-input"
+                        shake={shakeInput}
+                        value={question} 
+                        onChange={this.handleInput} 
+                        onClick={this.handleClick}
+                    />
+                    <QuestionDisplay question={askedQuestion}/>
                     <Icosahedron refreshing={refreshing} response={response}/>
                     <Icon name='info circle' size='big' className='icon'/>
                 </div>
