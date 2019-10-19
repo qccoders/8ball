@@ -12,7 +12,8 @@ import QuestionDisplay from "../questionDisplay/QuestionDisplay";
 
 class App extends Component {
     state = { 
-        refreshing: false, 
+        refreshing: false,
+        initialized: false,
         response: 0, 
         question: '', 
         askedQuestion: '', 
@@ -25,7 +26,8 @@ class App extends Component {
             this.rejectClick();
         } else {
             this.setState({ 
-                refreshing: true, 
+                refreshing: true,
+                initialized: true,
                 question: '', 
                 askedQuestion: this.state.question,
                 responses: []
@@ -68,7 +70,7 @@ class App extends Component {
     }
 
     render() {
-        var { refreshing, response, question, askedQuestion, shakeInput } = this.state;
+        var { refreshing, initialized, response, question, askedQuestion, shakeInput } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -83,7 +85,7 @@ class App extends Component {
                         onClick={this.handleClick}
                     />
                     <QuestionDisplay question={askedQuestion}/>
-                    <Icosahedron refreshing={refreshing} response={response}/>
+                    <Icosahedron initialized={initialized} refreshing={refreshing} response={response}/>
                     <Icon name='info circle' size='big' className='icon'/>
                 </div>
             </div>
