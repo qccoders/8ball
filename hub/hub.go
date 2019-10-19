@@ -15,6 +15,7 @@ import (
 
 	model "./model"
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 	"gopkg.in/yaml.v2"
 )
 
@@ -30,25 +31,16 @@ func main() {
 	logRegisteredAgents()
 
 	router := httprouter.New()
-
-	router.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("Access-Control-Request-Method") != "" {
-			header := w.Header()
-			header.Set("Access-Control-Allow-Methods", r.Header.Get("Allow"))
-			header.Set("Access-Control-Allow-Origin", "*")
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	})
-
 	router.GET("/answer", answer)
 
 	static := httprouter.New()
 	static.ServeFiles("/*filepath", http.Dir("public"))
 	router.NotFound = static
 
+	handler := cors.Default().Handler(router)
+
 	log.Println("Listening on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func answer(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
