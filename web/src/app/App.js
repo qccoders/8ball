@@ -46,10 +46,12 @@ class App extends Component {
     }
 
     calculateResponse = (responses) => {
-        let strategy = strategies[Math.floor(Math.random() * strategies.length)];
+        responses = [...responses.filter(r => r.response >= 0)];
+
+        let strategy = strategies[Math.floor(Math.random() * strategies.length)];        
         
-        var result = strategy.compute([...responses]);
-        
+        var result = strategy.compute(responses);
+
         console.log(strategy.name, result, responses);
         return result;
     }
