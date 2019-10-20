@@ -8,7 +8,7 @@ class Icosahedron extends Component {
         let { initialized, refreshing, onClick } = this.props;
 
         return (
-            <div className="icosahedron-container" onClick={(initialized && !refreshing) ? onClick : ''}>
+            <div className="icosahedron-container" onClick={(initialized && !refreshing) ? onClick : () => {}}>
                 {!initialized || (!refreshing ? <div className="icosahedron fadeIn">
                     <div className="text">
                         {responses[this.props.response]}
