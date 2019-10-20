@@ -18,7 +18,7 @@ class App extends Component {
         askedQuestion: '', 
         responses: [],
         shakeInput: false,
-        showDetails: false,
+        showDetails: true,
     };
 
     handleClick = (e) => {
