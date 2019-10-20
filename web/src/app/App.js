@@ -9,6 +9,7 @@ import "./App.css";
 import Icosahedron from "../icosahedron/Icosahedron";
 import QuestionInput from "../questionInput/QuestionInput";
 import QuestionDisplay from "../questionDisplay/QuestionDisplay";
+import Details from "../details/Details";
 
 class App extends Component {
     state = { 
@@ -19,6 +20,7 @@ class App extends Component {
         askedQuestion: '', 
         responses: [],
         shakeInput: false,
+        showDetails: false,
     };
 
     handleClick = (e) => {
@@ -30,7 +32,8 @@ class App extends Component {
                 initialized: true,
                 question: '', 
                 askedQuestion: this.state.question,
-                responses: []
+                responses: [],
+                showDetails: false,
             }, () => {
                 axios.get(`${hubURL}?q=${this.state.askedQuestion}`)
                 .then(response => {
@@ -70,7 +73,7 @@ class App extends Component {
     }
 
     render() {
-        var { refreshing, initialized, response, question, askedQuestion, shakeInput } = this.state;
+        var { refreshing, initialized, response, question, askedQuestion, shakeInput, showDetails } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -85,7 +88,13 @@ class App extends Component {
                         onClick={this.handleClick}
                     />
                     <QuestionDisplay question={askedQuestion}/>
-                    <Icosahedron initialized={initialized} refreshing={refreshing} response={response}/>
+                    <Icosahedron 
+                        initialized={initialized} 
+                        refreshing={refreshing} 
+                        response={response}
+                        onClick={() => this.setState({ showDetails: !showDetails })}
+                    />
+                    <Details show={showDetails}/>
                 </div>
             </div>
         );
