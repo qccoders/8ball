@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
 
-import { Segment, Input, Button, Label, Icon } from 'semantic-ui-react';
-
 import { hubURL } from '../constants';
 import strategies from '../strategies';
 import "./App.css";
