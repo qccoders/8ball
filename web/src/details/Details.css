@@ -4,8 +4,20 @@
     margin-left: 10px;
     margin-right: 10px;
     margin-top: -117px;
+    text-align: left;
+    color: white;
 }
 
 .details-tab {
     border: 0px !important;
+}
+
+.response-table {
+    max-width: 250px;
+}
+
+.response-table-label {
+    max-width: 165px;
+    font-weight: bold;
+    text-align: right !important;
 }
