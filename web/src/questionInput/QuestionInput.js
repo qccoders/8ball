@@ -11,6 +11,7 @@ class QuestionInput extends Component {
             <div id='question-input-container' className={classNames}>
                 <Segment inverted>
                     <Input 
+                        className='input-box'
                         id={this.props.id}
                         inverted 
                         value={this.props.value}
