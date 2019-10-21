@@ -1,10 +1,12 @@
 .input-container {
   margin-bottom: 30px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
 }
 
 .input-box {
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
 }
   
 .shake {

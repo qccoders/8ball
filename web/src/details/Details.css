@@ -13,11 +13,10 @@
 }
 
 .response-table {
-    max-width: 500px;
+    max-width: 375px;
 }
 
 .response-table-label {
-    max-width: 165px;
+    max-width: 145px;
     font-weight: bold;
-    text-align: right !important;
 }
