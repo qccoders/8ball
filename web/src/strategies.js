@@ -43,6 +43,8 @@ export default [
                     case 3:
                         negative++;
                         break;
+                    default:
+                        throw new Error('should never happen')
                 }
             });
 

@@ -5,10 +5,10 @@ import { Icon } from 'semantic-ui-react';
 
 class Icosahedron extends Component {
     render() {
-        let { initialized, refreshing } = this.props;
+        let { initialized, refreshing, onClick } = this.props;
 
         return (
-            <div className="icosahedron-container">
+            <div className="icosahedron-container" onClick={(initialized && !refreshing) ? onClick : () => {}}>
                 {!initialized || (!refreshing ? <div className="icosahedron fadeIn">
                     <div className="text">
                         {responses[this.props.response]}

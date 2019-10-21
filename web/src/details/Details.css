@@ -1,0 +1,22 @@
+.details-container {
+    width: calc(100% - 20px);
+    max-width: 1000px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: -117px;
+    text-align: left;
+    color: white;
+}
+
+.details-tab {
+    border: 0px !important;
+}
+
+.response-table {
+    max-width: 375px;
+}
+
+.response-table-label {
+    max-width: 145px;
+    font-weight: bold;
+}

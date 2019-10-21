@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import axios from 'axios';
 
-import { Segment, Input, Button, Label, Icon } from 'semantic-ui-react';
-
 import { hubURL } from '../constants';
 import strategies from '../strategies';
 import "./App.css";
 import Icosahedron from "../icosahedron/Icosahedron";
 import QuestionInput from "../questionInput/QuestionInput";
 import QuestionDisplay from "../questionDisplay/QuestionDisplay";
+import Details from "../details/Details";
 
 class App extends Component {
     state = { 
@@ -19,6 +18,9 @@ class App extends Component {
         askedQuestion: '', 
         responses: [],
         shakeInput: false,
+        showDetails: false,
+        strategy: '',
+        delay: 0,
     };
 
     handleClick = (e) => {
@@ -30,15 +32,20 @@ class App extends Component {
                 initialized: true,
                 question: '', 
                 askedQuestion: this.state.question,
-                responses: []
+                responses: [],
+                strategy: '',
+                showDetails: false,
             }, () => {
                 axios.get(`${hubURL}?q=${this.state.askedQuestion}`)
                 .then(response => {
                     let responses = response.data.responses;
+                    let { strategy, result } = this.calculateResponse(responses);
 
                     this.setState({ 
                         responses: responses,
-                        response: this.calculateResponse(responses),
+                        response: result,
+                        strategy: strategy,
+                        delay: response.data.delay,
                         refreshing: false
                     });
                 });
@@ -66,11 +73,11 @@ class App extends Component {
         var result = strategy.compute(responses);
 
         console.log(strategy.name, result, responses);
-        return result;
+        return { strategy: strategy.name, result };
     }
 
     render() {
-        var { refreshing, initialized, response, question, askedQuestion, shakeInput } = this.state;
+        var { refreshing, initialized, response, responses, question, askedQuestion, shakeInput, showDetails, strategy, delay } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -85,7 +92,19 @@ class App extends Component {
                         onClick={this.handleClick}
                     />
                     <QuestionDisplay question={askedQuestion}/>
-                    <Icosahedron initialized={initialized} refreshing={refreshing} response={response}/>
+                    <Icosahedron 
+                        initialized={initialized} 
+                        refreshing={refreshing} 
+                        response={response}
+                        onClick={() => this.setState({ showDetails: !showDetails })}
+                    />
+                    <Details 
+                        show={showDetails}
+                        strategy={strategy}
+                        delay={delay}
+                        response={response}
+                        responses={responses}
+                    />
                 </div>
             </div>
         );
