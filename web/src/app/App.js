@@ -18,7 +18,9 @@ class App extends Component {
         askedQuestion: '', 
         responses: [],
         shakeInput: false,
-        showDetails: true,
+        showDetails: false,
+        strategy: '',
+        delay: 0,
     };
 
     handleClick = (e) => {
@@ -31,15 +33,19 @@ class App extends Component {
                 question: '', 
                 askedQuestion: this.state.question,
                 responses: [],
+                strategy: '',
                 showDetails: false,
             }, () => {
                 axios.get(`${hubURL}?q=${this.state.askedQuestion}`)
                 .then(response => {
                     let responses = response.data.responses;
+                    let { strategy, result } = this.calculateResponse(responses);
 
                     this.setState({ 
                         responses: responses,
-                        response: this.calculateResponse(responses),
+                        response: result,
+                        strategy: strategy,
+                        delay: response.data.delay,
                         refreshing: false
                     });
                 });
@@ -67,11 +73,11 @@ class App extends Component {
         var result = strategy.compute(responses);
 
         console.log(strategy.name, result, responses);
-        return result;
+        return { strategy: strategy.name, result };
     }
 
     render() {
-        var { refreshing, initialized, response, question, askedQuestion, shakeInput, showDetails } = this.state;
+        var { refreshing, initialized, response, responses, question, askedQuestion, shakeInput, showDetails, strategy, delay } = this.state;
 
         askedQuestion = (askedQuestion !== '' && !askedQuestion.endsWith('?')) ? askedQuestion + '?' : askedQuestion;
         
@@ -92,7 +98,13 @@ class App extends Component {
                         response={response}
                         onClick={() => this.setState({ showDetails: !showDetails })}
                     />
-                    <Details show={showDetails}/>
+                    <Details 
+                        show={showDetails}
+                        strategy={strategy}
+                        delay={delay}
+                        response={response}
+                        responses={responses}
+                    />
                 </div>
             </div>
         );
