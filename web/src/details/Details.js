@@ -5,6 +5,7 @@ import ResponseList from './ResponseList';
 import ResponseTable from './ResponseTable';
 
 import { Tab, Divider } from 'semantic-ui-react';
+import NetworkGraph from "./NetworkGraph";
 
 class Details extends Component {
     panes = () => [
@@ -18,7 +19,11 @@ class Details extends Component {
         },
         { 
             menuItem: 'Network Graph', 
-            render: () => <Tab.Pane inverted className='details-tab'>Graph</Tab.Pane> 
+            render: () => <Tab.Pane inverted className='details-tab'>
+                <div id='network' className='network-container'>
+                    <NetworkGraph agentResponses={this.props.responses} responses={responses}/>
+                </div>
+            </Tab.Pane> 
         },
     ];
       
