@@ -1,5 +1,6 @@
-# 8ball
-Distributed Magic 8-Ball
+# 🎱 Distributed Magic 8-Ball
+
+Ask a yes or no question and get a consensus response from our network of 8-balls! Why settle for just one?!
 
 ## Start Web
 
