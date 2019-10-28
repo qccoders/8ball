@@ -3,55 +3,24 @@ import { DataSet, Network } from "vis-network";
 
 class NetworkGraph extends Component {
     componentDidMount = () => {
-        var nodes = new DataSet([
-            { id: 1, label: "node\none", shape: "box", color: "#97C2FC" },
-            { id: 2, label: "node\ntwo", shape: "circle", color: "#FFFF00" },
-            { id: 3, label: "node\nthree", shape: "diamond", color: "#FB7E81" },
-            {
-                id: 4,
-                label: "node\nfour",
-                shape: "dot",
-                size: 10,
-                color: "#7BE141"
-            },
-            { id: 5, label: "node\nfive", shape: "ellipse", color: "#6E6EFD" },
-            { id: 6, label: "node\nsix", shape: "star", color: "#C2FABC" },
-            {
-                id: 7,
-                label: "node\nseven",
-                shape: "triangle",
-                color: "#FFA807"
-            },
-            {
-                id: 8,
-                label: "node\neight",
-                shape: "triangleDown",
-                color: "#6E6EFD"
-            }
-        ]);
+        let res = { 
+            name: 'Hub',
+            children: this.props.agentResponses 
+        };
 
-        // create an array with edges
-        var edges = new DataSet([
-            { from: 1, to: 8, color: { color: "red" } },
-            { from: 1, to: 3, color: "rgb(20,24,200)" },
-            {
-                from: 1,
-                to: 2,
-                color: { color: "rgba(30,30,30,0.2)", highlight: "blue" }
-            },
-            { from: 2, to: 4, color: { inherit: "to" } },
-            { from: 2, to: 5, color: { inherit: "from" } },
-            { from: 5, to: 6, color: { inherit: "both" } },
-            { from: 6, to: 7, color: { color: "#ff0000", opacity: 0.3 } },
-            { from: 6, to: 8, color: { opacity: 0.3 } }
-        ]);
+        let nodesAndEdges = [];
+        this.makeNodes(res, 0, nodesAndEdges);
 
-        // create a network
+        let nodes = new DataSet(nodesAndEdges.map(n => n.node));
+        let edges = new DataSet(nodesAndEdges.map(n => n.edge).filter(n => n.from != n.to));
+
         var container = document.getElementById("network");
+
         var data = {
             nodes: nodes,
             edges: edges
         };
+
         var options = {
             nodes: {
                 shape: "circle"
@@ -60,6 +29,27 @@ class NetworkGraph extends Component {
 
         new Network(container, data, options);
     };
+
+    makeNodes = (rootNode, parentId, nodesAndEdges) => {
+        let nextId = nodesAndEdges.length;
+
+        nodesAndEdges.push(this.makeNode(rootNode, parentId, nextId));
+
+        if (rootNode.children) {
+            rootNode.children.map((c, i) => this.makeNodes(c, nextId, nodesAndEdges));
+        }
+    }
+
+    makeNode = (node, parentId, id) => ({
+        node: { 
+            id: id, 
+            label: node.name, 
+            shape: id === 0 ? 'triangleDown' : 'circle', 
+            color: id === 0 ? '#255fff' : '#FFF',
+            size: id === 0 ? 50 : 25,
+        },
+        edge: { from: parentId, to: id, color: { color: 'grey' }} 
+    })
 
     render = () => ''
 }
