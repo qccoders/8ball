@@ -12,7 +12,7 @@ class NetworkGraph extends Component {
         this.makeNodes(res, 0, nodesAndEdges);
 
         let nodes = new DataSet(nodesAndEdges.map(n => n.node));
-        let edges = new DataSet(nodesAndEdges.map(n => n.edge).filter(n => n.from != n.to));
+        let edges = new DataSet(nodesAndEdges.map(n => n.edge).filter(n => n.from !== n.to));
 
         var container = document.getElementById("network");
 
