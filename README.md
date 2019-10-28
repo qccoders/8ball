@@ -2,6 +2,8 @@
 
 Ask a yes or no question and get a consensus response from our network of 8-balls! Why settle for just one?!
 
+![basic view](https://github.com/qccoders/8ball/blob/master/docs/img/basic.PNG?raw=true)
+
 ## Start Web
 
 Assumes [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/) are installed.
