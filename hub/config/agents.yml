@@ -13,3 +13,6 @@
 - name: Kucksdorfs
   webhook: http://8ball.kucksdorfs.com/
   language: cs
+- name: FSharp
+  webhook: http://whatnet.us:5000/answer
+  language: f#

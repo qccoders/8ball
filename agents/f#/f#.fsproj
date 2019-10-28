@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>f_</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Answer.fs" />
+    <Compile Include="Controllers\AnswerController.fs" />
+    <Compile Include="Startup.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>
