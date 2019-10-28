@@ -1,6 +1,6 @@
-[![CircleCI](https://circleci.com/gh/qccoders/8ball/tree/master.svg?style=shield)](https://circleci.com/gh/qccoders/8ball/tree/master)
-
 # 🎱 Distributed Magic 8-Ball
+
+[![CircleCI](https://circleci.com/gh/qccoders/8ball/tree/master.svg?style=shield)](https://circleci.com/gh/qccoders/8ball/tree/master)
 
 Ask a yes or no question and get a consensus response from our network of 8-balls! Why settle for just one?!
 
