@@ -20,3 +20,7 @@
     max-width: 145px;
     font-weight: bold;
 }
+
+.network-container {
+    height: 800px;
+}

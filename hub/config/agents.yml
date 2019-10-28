@@ -11,5 +11,5 @@
   webhook: https://raw.githubusercontent.com/qccoders/8ball/jp/static-agent/agents/static/jp/
   language: json
 - name: Kucksdorfs
-  webook: http://8ball.kucksdorfs.com/
+  webhook: http://8ball.kucksdorfs.com/
   language: cs
