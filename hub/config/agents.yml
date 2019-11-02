@@ -16,3 +16,6 @@
 - name: FSharp
   webhook: http://whatnet.us:5000
   language: f#
+- name: Python+Flask
+  webhook: http://whatnet.us:5001
+  language: python
