@@ -23,5 +23,5 @@
   webhook: http://whatnet.us:5002
   language: ruby
 - name: Elixir+Phoenix
-  webhook: http://whatnet.us:5003
+  webhook: http://whatnet.us:5003/api
   language: elixir
