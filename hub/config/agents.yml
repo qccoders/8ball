@@ -19,3 +19,6 @@
 - name: Python+Flask
   webhook: http://whatnet.us:5001
   language: python
+- name: Ruby+Sinatra
+  webhook: http://whatnet.us:5002
+  language: ruby
