@@ -28,3 +28,6 @@
 - name: Go(lang)
   webhook: http://whatnet.us:5004
   language: go
+- name: CSharp
+  webhook: http://whatnet.us:5005
+  language: cs
