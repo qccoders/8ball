@@ -20,12 +20,14 @@ namespace c_.Controllers
                 Name = "C#",
                 Response = rng.Next(0,20),
                 Children = new [] {
-                    Name = "C♭",
-                    Response = rng.Next(0,20),
-                    Children = new [] {
-                        {
-                            Name = "C",
-                            Response = rng.Next(0,20)
+                    new {
+                        Name = "C♭",
+                        Response = rng.Next(0,20),
+                        Children = new [] {
+                            new {
+                                Name = "C",
+                                Response = rng.Next(0,20)
+                            }
                         }
                     }
                 }
