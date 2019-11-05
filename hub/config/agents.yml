@@ -25,3 +25,6 @@
 - name: Elixir+Phoenix
   webhook: http://whatnet.us:5003/api
   language: elixir
+- name: Go(lang)
+  webhook: http://whatnet.us:5004
+  language: go
