@@ -1,6 +1,7 @@
 require 'sinatra'
 
 srand
+set :port, 5002
 
 get '/answer' do
     content_type :json
