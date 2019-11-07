@@ -34,3 +34,6 @@
 - name: Scala+Play
   webhook: http://whatnet.us:5006
   language: scala
+- name: Java+Spring
+  webhook: http://whatnet.us:5007
+  language: java
