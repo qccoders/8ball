@@ -8,7 +8,7 @@
   webhook: https://billw.dev
   language: php
 - name: AlwaysYes
-  webhook: https://raw.githubusercontent.com/qccoders/8ball/jp/static-agent/agents/static/jp/
+  webhook: https://raw.githubusercontent.com/qccoders/8ball/master/agents/static/jp
   language: json
 - name: Kucksdorfs
   webhook: http://8ball.kucksdorfs.com/
