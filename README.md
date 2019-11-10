@@ -12,7 +12,7 @@ Click the triangle to see how the answer was derived!
 
 Click the Network Graph tab to see the distributed network!
 
-![network graph](https://github.com/qccoders/8ball/blob/master/docs/img/network.PNG?raw=true)
+![network graph](https://github.com/qccoders/8ball/blob/master/docs/img/graph.PNG?raw=true)
 
 
 ## Start Web
