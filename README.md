@@ -2,9 +2,18 @@
 
 Ask a yes or no question and get a consensus response from our network of 8-balls! Why settle for just one?!
 
+Ask a Question... Get an Answer!
+
 ![basic view](https://github.com/qccoders/8ball/blob/master/docs/img/basic.PNG?raw=true)
 
-[![CircleCI](https://circleci.com/gh/qccoders/8ball/tree/master.svg?style=shield)](https://circleci.com/gh/qccoders/8ball/tree/master)
+Click the triangle to see how the answer was derived!
+
+![details](https://github.com/qccoders/8ball/blob/master/docs/img/details.PNG?raw=true)
+
+Click the Network Graph tab to see the distributed network!
+
+![network graph](https://github.com/qccoders/8ball/blob/master/docs/img/network.PNG?raw=true)
+
 
 ## Start Web
 
@@ -30,7 +39,7 @@ go run .
 
 ## Build Docker Image
 
-Assumes Node.js, Yarn, Golang and Docker are installed.
+Assumes [Node.js](https://nodejs.org/en/), [Yarn](https://yarnpkg.com/en/), [Golang](https://golang.org/doc/install) and [Docker](https://docs.docker.com/install/) are installed.
 
 ```
 git clone https://github.com/qccoders/8ball
@@ -57,3 +66,5 @@ Be sure that you've registered on the [Hacktoberfest 2019](https://hacktoberfest
 7. When your PR has been approved it will be merged.  Thanks for your contribution!
 
 If you aren't sure what to do at any point, ask! There are no stupid questions.
+
+[![CircleCI](https://circleci.com/gh/qccoders/8ball/tree/master.svg?style=shield)](https://circleci.com/gh/qccoders/8ball/tree/master)
