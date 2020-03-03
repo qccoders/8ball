@@ -10,9 +10,6 @@
 - name: AlwaysYes
   webhook: https://raw.githubusercontent.com/qccoders/8ball/master/agents/static/jp
   language: json
-- name: Kucksdorfs
-  webhook: http://8ball.kucksdorfs.com/
-  language: cs
 - name: FSharp
   webhook: http://whatnet.us:5000
   language: f#
